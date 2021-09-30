@@ -154,7 +154,7 @@ RectTransform:
   m_Children:
   - {fileID: 1642312067}
   m_Father: {fileID: 1283377243}
-  m_RootOrder: 1
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
@@ -309,12 +309,12 @@ RectTransform:
   m_Children:
   - {fileID: 1391331932}
   m_Father: {fileID: 1283377243}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 250}
-  m_SizeDelta: {x: 0, y: 389.8}
+  m_SizeDelta: {x: 0, y: 580}
   m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &244055425
 MonoBehaviour:
@@ -472,7 +472,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 364.15002, y: 63.024002}
+  m_SizeDelta: {x: 375, y: 60}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &699341913
 MonoBehaviour:
@@ -1150,8 +1150,8 @@ RectTransform:
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_Children:
   - {fileID: 892894360}
-  - {fileID: 217569793}
   - {fileID: 244055424}
+  - {fileID: 217569793}
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1403,7 +1403,7 @@ GameObject:
   - component: {fileID: 1737563472}
   - component: {fileID: 1737563474}
   m_Layer: 0
-  m_Name: humanIcon (1)
+  m_Name: humanIcon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1450,7 +1450,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: cbc1c030a8f5daa46b3041c2025a0870, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.35283017, g: 0.7768856, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -1525,7 +1525,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -15, y: 15}
-  m_SizeDelta: {x: 364.15002, y: 63.024002}
+  m_SizeDelta: {x: 375, y: 60}
   m_Pivot: {x: 1, y: 0}
 --- !u!114 &1774181663
 MonoBehaviour:
@@ -1646,7 +1646,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 364.15, y: 63.024}
+  m_SizeDelta: {x: 375, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1900034421
 MonoBehaviour:
@@ -1768,7 +1768,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 364.149, y: 62.531998}
+  m_SizeDelta: {x: 375, y: 60}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2008270035
 MonoBehaviour:

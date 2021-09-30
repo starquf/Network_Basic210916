@@ -4,42 +4,59 @@ using UnityEngine;
 
 public class UnitControl : MonoBehaviour
 {
-    public bool isPlayer = true;
+    const float speed = 3.0f;
+    public bool bMovable = false;
+    GameManager gm;
+    Vector3 targetPos;
+    Vector3 orgPos;
 
-    private Vector3 targetPos = Vector3.zero;
-    private Vector3 dir = Vector3.zero;
+    float timeToDest;
+    float elapsed;
+    bool bMoving;
 
-    public float moveSpeed = 3f;
+    private void Start()
+    {
+        gm = GameObject.Find("GameManager").GetComponent<GameManager>();
+        orgPos = transform.position;
+        targetPos = orgPos;
+        timeToDest = 0;
+        bMoving = false;
+    }
 
     private void Update()
     {
-        GetKey();
-        Move();
-    }
-
-    private void GetKey()
-    {
-        if (!isPlayer) return;
-
-        if (Input.GetMouseButtonDown(0))
+        if (bMoving)
         {
-            targetPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            targetPos.z = 0;
+            elapsed += Time.deltaTime;
+            if (elapsed >= timeToDest)
+            {
+                elapsed = timeToDest;
+                transform.position = targetPos;
+                bMoving = false;
+            }
+            else
+            {
+                Vector3 newPos = Vector3.Lerp(orgPos, targetPos, elapsed / timeToDest);
+                transform.position = newPos;
+            }
         }
     }
 
-    private void Move()
+    public void SetTargetPos(Vector3 pos)
     {
-        if (!isPlayer) return;
+        orgPos = transform.position;
 
-        dir = targetPos - transform.position;
-
-        if (dir.sqrMagnitude <= 0.1f * 0.1f)
-        {
-            transform.position = targetPos;
-            return;
-        }
-
-        transform.position += dir.normalized * moveSpeed * Time.deltaTime;
+        targetPos = pos;
+        targetPos.z = orgPos.z;
+        timeToDest = Vector3.Distance(orgPos, targetPos) / speed;
+        elapsed = 0;
+        bMoving = true;
     }
+
+    /*
+    public void SetColor(string id)
+    {
+        
+    }
+    */
 }
