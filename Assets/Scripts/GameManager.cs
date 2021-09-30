@@ -143,11 +143,94 @@ public class GameManager : MonoBehaviour
 
     private void SendCommand(string cmd)
     {
+        SocketModule.GetInstance().SendData(cmd);
+        Debug.Log("cmd sent :" cmd);
+    }
 
+    public string GetID(string cmd)
+    {
+        int idx = cmd.IndexOf("$");
+        string id = "";
+
+        if (idx > 0)
+        {
+            id = cmd.Substring(0, idx);
+        }
+
+        return id;
+    }
+
+    public void QueueCommand(string cmd)
+    {
+        commandQueue.Enqueue(cmd);
     }
 
     private void ProcessCommand(string cmd)
     {
-        
+        bool bMore = true;
+
+        while (bMore)
+        {
+            Debug.Log("process cmd = " + cmd);
+            int idx = cmd.IndexOf("$");
+            string id = "";
+            if (idx > 0)
+            {
+                id = cmd.Substring(0, idx);
+            }
+
+            int idx2 = cmd.IndexOf("#");
+            if (idx2 > idx)
+            {
+                int idx3 = cmd.IndexOf("#", idx2 + 1);
+                if (idx3 > idx2)
+                {
+                    string command = cmd.Substring(idx2 + 1, idx3 - idx2 - 1);
+                    string remain = cmd.Substring(idx3 + 1);
+                    Debug.Log("command = " + command + "id = " + id + "remain = " + remain);
+
+                    if (myID.CompareTo(id) != 0)
+                    {
+                        switch (command)
+                        {
+                            case "Enter":
+                                AddUnit(id);
+                                break;
+
+                            case "Move":
+                                SetMove(id, remain);
+                                break;
+
+                            case "Left":
+                                UserLeft(id);
+                                break;
+
+                            case "History":
+                                LoadHistory(remain);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        Debug.Log("Ignore remote command");
+                    }
+
+                    cmd = remain;
+
+                    if (cmd.Length <= 0)
+                    {
+                        bMore = false;
+                    }
+                }
+                else
+                {
+                    bMore = false;
+                }
+            }
+            else
+            {
+                bMore = false; 
+            }
+        }
     }
 }
