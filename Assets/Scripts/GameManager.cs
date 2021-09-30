@@ -70,7 +70,7 @@ public class GameManager : MonoBehaviour
 
     public void OnLogOut()
     {
-        tcp.LogOut();
+        tcp.Logout();
 
         foreach (var remotePair in remoteUnits)
         {
@@ -144,7 +144,7 @@ public class GameManager : MonoBehaviour
     private void SendCommand(string cmd)
     {
         SocketModule.GetInstance().SendData(cmd);
-        Debug.Log("cmd sent :" cmd);
+        Debug.Log("cmd sent :" + cmd);
     }
 
     public string GetID(string cmd)

@@ -78,7 +78,7 @@ public class SocketModule : MonoBehaviour
         bRunning = false;
     }
 
-    private void Logout()
+    public void Logout()
     {
         if (bRunning)
         {
@@ -103,6 +103,35 @@ public class SocketModule : MonoBehaviour
 
     private void getMessage()
     {
-        
+        byte[] inStream = new byte[1024];
+        string returndata = "";
+
+        try
+        {
+            while (bRunning)
+            {
+                serverStream = clientSocket.GetStream();
+                int buffSize = 0;
+                buffSize = clientSocket.ReceiveBufferSize;
+                int numBytesRead;
+
+                if (serverStream.DataAvailable)
+                {
+                    returndata = "";
+                    while (serverStream.DataAvailable)
+                    {
+                        numBytesRead = serverStream.Read(inStream, 0, inStream.Length);
+                        returndata += Encoding.ASCII.GetString(inStream, 0, numBytesRead);
+                    }
+
+                    gm.QueueCommand(returndata);
+                    Debug.Log(returndata);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            StopThread();
+        }
     }
 }
