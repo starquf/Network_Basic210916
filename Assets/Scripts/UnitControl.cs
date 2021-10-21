@@ -5,7 +5,13 @@ using UnityEngine;
 public class UnitControl : MonoBehaviour
 {
     const float speed = 3.0f;
+    const int MAX_HP = 100;
+    const int DROP_HP = 1;
+
     public bool bMovable = false;
+    public ParticleSystem fxParticle;
+    public GameObject hpBar;
+
     GameManager gm;
     Vector3 targetPos;
     Vector3 orgPos;
@@ -14,6 +20,10 @@ public class UnitControl : MonoBehaviour
     float elapsed;
     bool bMoving;
 
+    float elapsedDrop;
+    int currentHP;
+    int maxHP;
+
     private void Start()
     {
         gm = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -21,6 +31,9 @@ public class UnitControl : MonoBehaviour
         targetPos = orgPos;
         timeToDest = 0;
         bMoving = false;
+
+        maxHP = MAX_HP;
+        SetHP(MAX_HP);
     }
 
     private void Update()
@@ -40,6 +53,14 @@ public class UnitControl : MonoBehaviour
                 transform.position = newPos;
             }
         }
+
+        elapsedDrop += Time.deltaTime;
+        if (elapsedDrop >= 1.0f)
+        {
+            elapsedDrop -= 1.0f;
+
+            DropHP(DROP_HP);
+        }
     }
 
     public void SetTargetPos(Vector3 pos)
@@ -53,10 +74,36 @@ public class UnitControl : MonoBehaviour
         bMoving = true;
     }
 
-    /*
-    public void SetColor(string id)
+    public void DropHP(int drop)
     {
-        
+        currentHP -= drop;
+        SetHP(currentHP);
     }
-    */
+
+    public void SetHP(int hp)
+    {
+        hp = Mathf.Clamp(hp, 0, maxHP);
+        currentHP = hp;
+
+        float ratio = (float)currentHP / (float)maxHP;
+        hpBar.transform.localScale = new Vector3(ratio, 1f, 1f);
+    }
+
+    public void StartFX()
+    {
+        if (currentHP > 0)
+        {
+            fxParticle.Play();
+        }
+    }
+
+    public void Revive()
+    {
+        SetHP(MAX_HP);
+    }
+
+    public int GetHP()
+    {
+        return currentHP;
+    }
 }

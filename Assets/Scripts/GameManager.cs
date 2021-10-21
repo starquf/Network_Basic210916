@@ -6,6 +6,10 @@ using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
+    const char CHAR_TERMINATOR = ';';
+    const char CHAR_COMMA = ',';
+    const int DAMAGE_ATTACK = 30;
+
     private SocketModule tcp;
 
     [SerializeField]
@@ -15,6 +19,8 @@ public class GameManager : MonoBehaviour
     public GameObject prefabUnit;
     public GameObject mainChar;
 
+    private UnitControl mainControl;
+
     Dictionary<string, UnitControl> remoteUnits;
     Queue<string> commandQueue;
 
@@ -23,6 +29,8 @@ public class GameManager : MonoBehaviour
         tcp = GetComponent<SocketModule>();
         remoteUnits = new Dictionary<string, UnitControl>();
         commandQueue = new Queue<string>();
+
+        mainControl = mainChar.GetComponent<UnitControl>();
     }
 
     private void Update()
@@ -43,6 +51,19 @@ public class GameManager : MonoBehaviour
 
                 string data = "#Move#" + targetPos.x + "," + targetPos.y;
                 SendCommand(data);
+            }
+        }
+
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (!EventSystem.current.IsPointerOverGameObject())
+            {
+                if (mainControl.GetHP() > 0)
+                {
+                    string data = "#Attack#";
+                    SendCommand(data);
+                    mainControl.StartFX();
+                }
             }
         }
     }
@@ -80,6 +101,14 @@ public class GameManager : MonoBehaviour
         remoteUnits.Clear();
     }
 
+    public void OnRevive()
+    {
+        mainChar.GetComponent<UnitControl>().Revive();
+
+        string data = "#Heal#";
+        SendCommand(data);
+    }
+
     public UnitControl AddUnit(string id)
     {
         UnitControl uc = null;
@@ -115,6 +144,44 @@ public class GameManager : MonoBehaviour
             UnitControl uc = remoteUnits[id];
             Destroy(uc.gameObject);
             remoteUnits.Remove(id);
+        }
+    }
+
+    public void UserHeal(string id)
+    {
+        if (remoteUnits.ContainsKey(id))
+        {
+            UnitControl uc = remoteUnits[id];
+            uc.Revive();
+        }
+    }
+
+    public void UserAttack(string id)
+    {
+        if (remoteUnits.ContainsKey(id))
+        {
+            UnitControl uc = remoteUnits[id];
+            uc.StartFX();
+        }
+    }
+
+    private void TakeDamage(string remain)
+    {
+        var strs = remain.Split(CHAR_COMMA);
+        for (int i = 0; i < strs.Length; i++)
+        {
+            UnitControl uc = remoteUnits[strs[i]];
+            if (uc != null)
+            {
+                uc.DropHP(DAMAGE_ATTACK);
+            }
+            else
+            {
+                if (myID.CompareTo(strs[i]) == 0)
+                {
+                    mainControl.DropHP(DAMAGE_ATTACK);
+                }
+            }
         }
     }
 
@@ -186,8 +253,23 @@ public class GameManager : MonoBehaviour
                 if (idx3 > idx2)
                 {
                     string command = cmd.Substring(idx2 + 1, idx3 - idx2 - 1);
-                    string remain = cmd.Substring(idx3 + 1);
-                    Debug.Log("command = " + command + "id = " + id + "remain = " + remain);
+                    string remain = "";
+                    string nextCommand;
+
+                    int idx4 = cmd.IndexOf(CHAR_TERMINATOR, idx3 + 1);
+
+                    if (idx4 > idx3)
+                    {
+                        remain = cmd.Substring(idx3 + 1, idx4 - idx3 - 1);
+                        nextCommand = cmd.Substring(idx4 + 1);
+                    }
+                    else
+                    {
+                        nextCommand = cmd.Substring(idx3 + 1);
+                    }
+
+                    //string remain = cmd.Substring(idx3 + 1);
+                    Debug.Log("command = " + command + " id = " + id + " remain = " + remain + " next = " + nextCommand);
 
                     if (myID.CompareTo(id) != 0)
                     {
@@ -208,6 +290,18 @@ public class GameManager : MonoBehaviour
                             case "History":
                                 LoadHistory(remain);
                                 break;
+
+                            case "Heal":
+                                UserHeal(id);
+                                break;
+
+                            case "Attack":
+                                UserAttack(id);
+                                break;
+
+                            case "Damage":
+                                TakeDamage(remain);
+                                break;
                         }
                     }
                     else
@@ -215,7 +309,7 @@ public class GameManager : MonoBehaviour
                         Debug.Log("Ignore remote command");
                     }
 
-                    cmd = remain;
+                    cmd = nextCommand;
 
                     if (cmd.Length <= 0)
                     {
