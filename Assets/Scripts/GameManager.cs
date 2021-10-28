@@ -170,10 +170,13 @@ public class GameManager : MonoBehaviour
         var strs = remain.Split(CHAR_COMMA);
         for (int i = 0; i < strs.Length; i++)
         {
-            UnitControl uc = remoteUnits[strs[i]];
-            if (uc != null)
+            if (remoteUnits.ContainsKey(strs[i]))
             {
-                uc.DropHP(DAMAGE_ATTACK);
+                UnitControl uc = remoteUnits[strs[i]];
+                if (uc != null)
+                {
+                    uc.DropHP(DAMAGE_ATTACK);
+                }
             }
             else
             {
@@ -265,6 +268,7 @@ public class GameManager : MonoBehaviour
                     }
                     else
                     {
+                        remain = cmd.Substring(idx3 + 1, cmd.Length - idx3 - 1);
                         nextCommand = cmd.Substring(idx3 + 1);
                     }
 
@@ -300,6 +304,7 @@ public class GameManager : MonoBehaviour
                                 break;
 
                             case "Damage":
+                                print("Attack remain : " + remain);
                                 TakeDamage(remain);
                                 break;
                         }
